@@ -17,7 +17,7 @@ class _ShopListScreenState extends State<ShopListScreen> {
   final _searchController = TextEditingController();
   String _selectedCategory = '';
 
-  final _categories = ['', 'Traditional', 'Modern', 'Sportswear', 'Abaya', 'Kids', 'Accessories'];
+  final _categories = ['', 'Traditional', 'Modern', 'Sportswear', 'Kids', 'Accessories'];
 
   @override
   void initState() {
@@ -58,10 +58,10 @@ class _ShopListScreenState extends State<ShopListScreen> {
               controller: _searchController,
               decoration: InputDecoration(
                 hintText: t('searchShops'),
-                prefixIcon: const Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search, color: Colors.white54),
                 suffixIcon: _searchController.text.isNotEmpty
                     ? IconButton(
-                        icon: const Icon(Icons.clear),
+                        icon: const Icon(Icons.clear, color: Colors.white54),
                         onPressed: () {
                           _searchController.clear();
                           setState(() {});
@@ -69,11 +69,12 @@ class _ShopListScreenState extends State<ShopListScreen> {
                       )
                     : null,
               ),
+              style: const TextStyle(color: Colors.white),
               onChanged: (_) => setState(() {}),
             ),
           ),
           SizedBox(
-            height: 40,
+            height: 36,
             child: ListView(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -81,10 +82,27 @@ class _ShopListScreenState extends State<ShopListScreen> {
                 final isSelected = _selectedCategory == cat;
                 return Padding(
                   padding: const EdgeInsets.only(right: 8),
-                  child: FilterChip(
-                    label: Text(cat.isEmpty ? t('all') : cat),
-                    selected: isSelected,
-                    onSelected: (_) => setState(() => _selectedCategory = isSelected ? '' : cat),
+                  child: GestureDetector(
+                    onTap: () => setState(() => _selectedCategory = isSelected ? '' : cat),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: isSelected ? Colors.white : Colors.transparent,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: isSelected ? Colors.white : Colors.white24,
+                        ),
+                      ),
+                      child: Text(
+                        cat.isEmpty ? t('all') : cat,
+                        style: TextStyle(
+                          color: isSelected ? Colors.black : Colors.white54,
+                          fontSize: 13,
+                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                        ),
+                      ),
+                    ),
                   ),
                 );
               }).toList(),
@@ -92,9 +110,16 @@ class _ShopListScreenState extends State<ShopListScreen> {
           ),
           Expanded(
             child: shopProvider.isLoading
-                ? const LoadingWidget()
+                ? ListView.builder(
+                    padding: const EdgeInsets.all(12),
+                    itemCount: 4,
+                    itemBuilder: (_, __) => const Padding(
+                      padding: EdgeInsets.only(bottom: 12),
+                      child: ShopSkeleton(),
+                    ),
+                  )
                 : filteredShops.isEmpty
-                    ? Center(child: Text(t('noShops')))
+                    ? Center(child: Text(t('noShops'), style: const TextStyle(color: Colors.white38)))
                     : ListView.builder(
                         padding: const EdgeInsets.all(12),
                         itemCount: filteredShops.length,

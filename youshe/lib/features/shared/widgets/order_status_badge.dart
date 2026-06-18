@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme.dart';
 import '../../../l10n/app_localizations.dart';
 
 class OrderStatusBadge extends StatelessWidget {
@@ -20,8 +19,9 @@ class OrderStatusBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: config.color.withOpacity(0.1),
+        color: config.color.withOpacity(0.15),
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: config.color.withOpacity(0.3)),
       ),
       child: Text(
         t(status),
@@ -37,17 +37,17 @@ class OrderStatusBadge extends StatelessWidget {
   _Config _getConfig() {
     switch (status) {
       case 'pending':
-        return _Config(Colors.orange);
+        return _Config(Colors.white70);
       case 'confirmed':
-        return _Config(Colors.blue);
+        return _Config(Colors.white);
       case 'cancelled':
-        return _Config(Colors.red);
+        return _Config(const Color(0xFFCF6679));
       case 'delivered':
-        return _Config(Colors.green);
+        return _Config(Colors.white70);
       case 'completed':
-        return _Config(AppTheme.primary);
+        return _Config(Colors.white);
       default:
-        return _Config(AppTheme.textSecondary);
+        return _Config(Colors.white38);
     }
   }
 }

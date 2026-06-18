@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants.dart';
-import '../../../core/theme.dart';
 import '../../../l10n/app_localizations.dart';
 import '../providers/auth_provider.dart';
 
@@ -117,7 +116,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 if (authProvider.error != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 8),
-                    child: Text(authProvider.error!, style: const TextStyle(color: AppTheme.error)),
+                    child: Text(authProvider.error!, style: const TextStyle(color: Color(0xFFCF6679))),
                   ),
                 const SizedBox(height: 24),
                 SizedBox(

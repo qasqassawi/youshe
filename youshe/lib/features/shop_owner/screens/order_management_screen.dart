@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/theme.dart';
 import '../../../l10n/app_localizations.dart';
 import '../providers/owner_order_provider.dart';
 import '../../shared/widgets/order_status_badge.dart';
@@ -38,9 +37,11 @@ class _OrderManagementScreenState extends State<OrderManagementScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.receipt_long_outlined, size: 80, color: AppTheme.textSecondary.withOpacity(0.5)),
+                      Icon(Icons.receipt_long_outlined,
+                          size: 80, color: Colors.white.withOpacity(0.2)),
                       const SizedBox(height: 16),
-                      Text(t('noOrders'), style: const TextStyle(fontSize: 16)),
+                      Text(t('noOrders'),
+                          style: const TextStyle(fontSize: 16, color: Colors.white38)),
                     ],
                   ),
                 )
@@ -54,30 +55,42 @@ class _OrderManagementScreenState extends State<OrderManagementScreen> {
                       return Card(
                         child: ListTile(
                           leading: CircleAvatar(
-                            backgroundColor: order.isPending ? Colors.orange.withOpacity(0.1) : Colors.green.withOpacity(0.1),
+                            backgroundColor: const Color(0xFF333333),
                             child: Icon(
-                              order.isPending ? Icons.access_time : order.isConfirmed ? Icons.check : Icons.close,
-                              color: order.isPending ? Colors.orange : order.isConfirmed ? Colors.green : Colors.red,
+                              order.isPending
+                                  ? Icons.access_time
+                                  : order.isConfirmed
+                                      ? Icons.check
+                                      : Icons.close,
+                              color: order.isPending
+                                  ? Colors.white70
+                                  : order.isConfirmed
+                                      ? Colors.white
+                                      : const Color(0xFFCF6679),
                             ),
                           ),
-                          title: Text('${t('orderNumber')}${order.id.substring(0, 8)}'),
+                          title: Text('${t('orderNumber')}${order.id.substring(0, 8)}',
+                              style: const TextStyle(color: Colors.white)),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('${order.totalAmount.toStringAsFixed(2)} JOD'),
+                              Text('${order.totalAmount.toStringAsFixed(2)} JOD',
+                                  style: const TextStyle(color: Color(0xFF888888))),
                               Row(
                                 children: [
                                   OrderStatusBadge(status: order.status, locale: locale),
                                   if (order.autoCancelled) ...[
                                     const SizedBox(width: 4),
-                                    Text(t('autoCancelled'), style: const TextStyle(fontSize: 10, color: AppTheme.error)),
+                                    Text(t('autoCancelled'),
+                                        style: const TextStyle(
+                                            fontSize: 10, color: Color(0xFFCF6679))),
                                   ],
                                 ],
                               ),
                             ],
                           ),
                           isThreeLine: true,
-                          trailing: const Icon(Icons.chevron_right),
+                          trailing: const Icon(Icons.chevron_right, color: Colors.white38),
                           onTap: () => context.go('/owner/orders/${order.id}'),
                         ),
                       );

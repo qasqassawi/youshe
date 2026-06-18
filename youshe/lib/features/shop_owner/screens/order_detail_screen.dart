@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../core/theme.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../models/order_model.dart';
 import '../providers/owner_order_provider.dart';
@@ -28,18 +27,27 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   Future<void> _loadOrder() async {
     final provider = context.read<OwnerOrderProvider>();
     final order = await provider.getOrderById(widget.orderId);
-    if (mounted) setState(() { _order = order; _isLoading = false; });
+    if (mounted) setState(() {
+      _order = order;
+      _isLoading = false;
+    });
   }
 
   Future<void> _confirm() async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Confirm Order'),
-        content: const Text('Mark this order as confirmed?'),
+        backgroundColor: const Color(0xFF1A1A1A),
+        title: const Text('Confirm Order', style: TextStyle(color: Colors.white)),
+        content: const Text('Mark this order as confirmed?',
+            style: TextStyle(color: Colors.white70)),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('No')),
-          ElevatedButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Yes, Confirm')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('No', style: TextStyle(color: Colors.white54))),
+          ElevatedButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Yes, Confirm')),
         ],
       ),
     );
@@ -55,17 +63,24 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     final reason = await showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Cancel Order'),
+        backgroundColor: const Color(0xFF1A1A1A),
+        title: const Text('Cancel Order', style: TextStyle(color: Colors.white)),
         content: TextField(
           controller: reasonController,
-          decoration: const InputDecoration(hintText: 'Reason for cancellation (optional)'),
+          decoration: const InputDecoration(
+            hintText: 'Reason for cancellation (optional)',
+            hintStyle: TextStyle(color: Colors.white38),
+          ),
           maxLines: 2,
+          style: const TextStyle(color: Colors.white),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Close')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Close', style: TextStyle(color: Colors.white54))),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: AppTheme.error),
             onPressed: () => Navigator.pop(ctx, reasonController.text),
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFCF6679)),
             child: const Text('Cancel Order', style: TextStyle(color: Colors.white)),
           ),
         ],
@@ -83,8 +98,15 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     final locale = Localizations.localeOf(context).languageCode;
     final t = (String key) => AppLocalizations.t(key, locale);
 
-    if (_isLoading) return Scaffold(appBar: AppBar(title: Text(t('orderDetail'))), body: const LoadingWidget());
-    if (_order == null) return Scaffold(appBar: AppBar(title: Text(t('orderDetail'))), body: const Center(child: Text('Order not found')));
+    if (_isLoading) {
+      return Scaffold(appBar: AppBar(title: Text(t('orderDetail'))), body: const LoadingWidget());
+    }
+    if (_order == null) {
+      return Scaffold(
+        appBar: AppBar(title: Text(t('orderDetail'))),
+        body: const Center(child: Text('Order not found', style: TextStyle(color: Colors.white38))),
+      );
+    }
 
     final order = _order!;
 
@@ -96,7 +118,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('${t('orderNumber')}${order.id.substring(0, 8)}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text(
+                '${t('orderNumber')}${order.id.substring(0, 8)}',
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
               OrderStatusBadge(status: order.status, locale: locale),
             ],
           ),
@@ -105,18 +130,24 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               padding: const EdgeInsets.only(top: 8),
               child: Container(
                 padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(color: AppTheme.error.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFCF6679).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
                 child: Row(
                   children: [
-                    const Icon(Icons.info_outline, color: AppTheme.error, size: 16),
+                    const Icon(Icons.info_outline, color: Color(0xFFCF6679), size: 16),
                     const SizedBox(width: 8),
-                    Text(t('autoCancelled'), style: const TextStyle(color: AppTheme.error, fontWeight: FontWeight.w600)),
+                    Text(t('autoCancelled'),
+                        style: const TextStyle(
+                            color: Color(0xFFCF6679), fontWeight: FontWeight.w600)),
                   ],
                 ),
               ),
             ),
           const SizedBox(height: 24),
-          Text(t('items'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(t('items'),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
           const SizedBox(height: 8),
           ...order.items.map((item) => Card(
                 child: Padding(
@@ -128,13 +159,20 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(item.displayName(locale), style: const TextStyle(fontWeight: FontWeight.w600)),
-                            if (item.size.isNotEmpty) Text('${t('size')}: ${item.size}', style: const TextStyle(fontSize: 12)),
-                            Text('${t('quantity')}: ${item.quantity}'),
+                            Text(item.displayName(locale),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600, color: Colors.white)),
+                            if (item.size.isNotEmpty)
+                              Text('${t('size')}: ${item.size}',
+                                  style: const TextStyle(fontSize: 12, color: Color(0xFF888888))),
+                            Text('${t('quantity')}: ${item.quantity}',
+                                style: const TextStyle(color: Colors.white70)),
                           ],
                         ),
                       ),
-                      Text('${(item.price * item.quantity).toStringAsFixed(2)} JOD', style: const TextStyle(fontWeight: FontWeight.bold)),
+                      Text('${(item.price * item.quantity).toStringAsFixed(2)} JOD',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.white)),
                     ],
                   ),
                 ),
@@ -143,12 +181,16 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(t('total'), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              Text('${order.totalAmount.toStringAsFixed(2)} JOD', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.accent)),
+              const Text('Total',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+              Text('${order.totalAmount.toStringAsFixed(2)} JOD',
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
             ],
           ),
           const SizedBox(height: 24),
-          Text(t('customerInfo'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(t('customerInfo'),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
           const SizedBox(height: 8),
           Card(
             child: Padding(
@@ -156,21 +198,27 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (order.customerName.isNotEmpty) _InfoRow(t('name'), order.customerName),
-                  if (order.customerPhone.isNotEmpty) _InfoRow(t('phone'), order.customerPhone),
-                  if (order.deliveryAddress.isNotEmpty) _InfoRow(t('deliveryAddress'), order.deliveryAddress),
-                  if (order.customerNotes.isNotEmpty) _InfoRow(t('customerNotes'), order.customerNotes),
+                  if (order.customerName.isNotEmpty)
+                    _InfoRow(t('name'), order.customerName),
+                  if (order.customerPhone.isNotEmpty)
+                    _InfoRow(t('phone'), order.customerPhone),
+                  if (order.deliveryAddress.isNotEmpty)
+                    _InfoRow(t('deliveryAddress'), order.deliveryAddress),
+                  if (order.customerNotes.isNotEmpty)
+                    _InfoRow(t('customerNotes'), order.customerNotes),
                 ],
               ),
             ),
           ),
           if (order.createdAt != null) ...[
             const SizedBox(height: 16),
-            Text('${t('createdAt').isNotEmpty ? '' : ''}${order.createdAt!.toLocal()}', style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+            Text('${order.createdAt!.toLocal()}',
+                style: const TextStyle(fontSize: 12, color: Color(0xFF888888))),
           ],
           if (order.cancellationReason.isNotEmpty) ...[
             const SizedBox(height: 16),
-            Text('${t('cancelReason')}: ${order.cancellationReason}', style: const TextStyle(color: AppTheme.error)),
+            Text('${t('cancelReason')}: ${order.cancellationReason}',
+                style: const TextStyle(color: Color(0xFFCF6679))),
           ],
           const SizedBox(height: 32),
           if (order.isPending)
@@ -181,16 +229,18 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     onPressed: _confirm,
                     icon: const Icon(Icons.check),
                     label: Text(t('confirmOrder')),
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: ElevatedButton.icon(
+                  child: OutlinedButton.icon(
                     onPressed: _cancel,
                     icon: const Icon(Icons.close),
                     label: Text(t('cancelOrder')),
-                    style: ElevatedButton.styleFrom(backgroundColor: AppTheme.error),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: const Color(0xFFCF6679),
+                      side: const BorderSide(color: Color(0xFFCF6679)),
+                    ),
                   ),
                 ),
               ],
@@ -198,7 +248,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           const SizedBox(height: 24),
           Text(
             t('orderWillAutoCancel'),
-            style: const TextStyle(color: AppTheme.textSecondary, fontSize: 12, fontStyle: FontStyle.italic),
+            style: const TextStyle(color: Color(0xFF888888), fontSize: 12, fontStyle: FontStyle.italic),
             textAlign: TextAlign.center,
           ),
         ],
@@ -219,8 +269,9 @@ class _InfoRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('$label: ', style: const TextStyle(fontWeight: FontWeight.w600)),
-          Expanded(child: Text(value)),
+          Text('$label: ',
+              style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white)),
+          Expanded(child: Text(value, style: const TextStyle(color: Colors.white70))),
         ],
       ),
     );

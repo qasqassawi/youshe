@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../../core/theme.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../providers/owner_product_provider.dart';
@@ -234,8 +233,8 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                           child: GestureDetector(
                             onTap: () => setState(() => _imageUrls.removeAt(entry.key)),
                             child: Container(
-                              decoration: const BoxDecoration(color: AppTheme.error, shape: BoxShape.circle),
-                              child: const Icon(Icons.close, color: Colors.white, size: 16),
+                          decoration: const BoxDecoration(color: Color(0xFFCF6679), shape: BoxShape.circle),
+                          child: const Icon(Icons.close, color: Colors.white, size: 16),
                             ),
                           ),
                         ),
@@ -247,16 +246,16 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                     width: 80,
                     height: 80,
                     decoration: BoxDecoration(
-                      border: Border.all(color: AppTheme.textSecondary.withOpacity(0.3)),
+                      border: Border.all(color: Color(0xFFB0B0B0).withOpacity(0.3)),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(Icons.add_photo_alternate_outlined, color: AppTheme.textSecondary),
+                    child: const Icon(Icons.add_photo_alternate_outlined, color: Color(0xFFB0B0B0)),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 16),
-            Text('${_imageUrls.length} ${t('images').toLowerCase()}', style: const TextStyle(color: AppTheme.textSecondary)),
+            Text('${_imageUrls.length} ${t('images').toLowerCase()}', style: const TextStyle(color: Color(0xFFB0B0B0))),
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,

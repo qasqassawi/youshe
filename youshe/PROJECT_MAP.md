@@ -61,8 +61,9 @@ lib/
 ├── app.dart                           # MaterialApp.router with GoRouter, l10n, theme
 ├── core/
 │   ├── constants.dart                 # AppConstants, FirestoreCollections, enums
-│   ├── theme.dart                     # AppTheme (colors, typography, theme data)
-│   ├── router.dart                    # GoRouter config (auth/role guards, 17 routes)
+│   ├── theme.dart                     # AppTheme (B&W dark theme, colors, typography, theme data)
+│   ├── router.dart                    # GoRouter config (auth/role guards, slide transitions)
+│   ├── demo_data.dart                 # 4 virtual demo stores + 28 demo products
 │   └── services/
 │       ├── auth_service.dart          # FirebaseAuth + Firestore role persistence
 │       ├── firestore_service.dart     # Thin generic CRUD wrapper (add/set/update/get/delete)
@@ -80,7 +81,7 @@ lib/
 │   │                                    Checkout, OrderTracking, SimilarItems screens + providers
 │   ├── shop_owner/                    # Dashboard, ProductForm, OrderManagement, OrderDetail,
 │   │                                    ShopProfile screens + providers
-│   └── shared/widgets/                # ProductCard, ShopCard, OrderStatusBadge, LoadingWidget
+│   └── shared/widgets/                # ProductCard, ShopCard, OrderStatusBadge, LoadingWidget, SkeletonWidget, ShopSkeleton, ProductSkeleton
 └── l10n/app_localizations.dart        # 90+ keys in English + Arabic, locale-aware lookup
 
 functions/
@@ -94,11 +95,13 @@ functions/
 ### Firebase Data Model
 
 | Collection | Key Fields |
-|---|---|
+|---|---|---|
 | `users/{uid}` | email, name, role, phone, fcmToken, createdAt |
-| `shops/{shopId}` | ownerId, nameEn, nameAr, descEn, descAr, logoUrl, coverUrl, category, city, phone, fulfillmentRate, totalOrders, successfulOrders, isActive |
-| `products/{productId}` | shopId, nameEn, nameAr, descEn, descAr, price, currency, sizes[], category, images[], isAvailable |
+| `shops/{shopId}` | ownerId, nameEn, nameAr, descEn, descAr, logoUrl, coverUrl, category, city, phone, fulfillmentRate, totalOrders, successfulOrders, isActive, isDemo |
+| `products/{productId}` | shopId, nameEn, nameAr, descEn, descAr, price, currency, sizes[], category, images[], isAvailable, isDemo |
 | `orders/{orderId}` | customerId, shopId, items[{productId, nameEn, nameAr, qty, price, size}], totalAmount, status, deliveryAddress, customerPhone, customerName, customerNotes, respondedAt, autoCancelled, cancellationReason |
+
+> `isDemo` is used for virtual demo stores (4 stores, 28 products) defined in `lib/core/demo_data.dart`. Demo data is merged with Firestore data in `ShopProvider` and `ProductProvider` and clearly marked with a DEMO badge in the UI.
 
 ### Required Firestore Composite Indexes
 1. `orders`: `shopId` ASC, `createdAt` DESC
@@ -111,7 +114,7 @@ functions/
 ## [VERIFIABLE_GOALS]
 
 | # | Status | Goal |
-|---|---|---|
+|---|---|---|---|
 | G1 | ✅ | User registers as customer by default; no role selection step; shop owners with existing admin accounts are redirected to dashboard on login |
 | G2 | ✅ | Shop owner creates shop profile (Ar/En), adds products with images |
 | G3 | ✅ | Customer browses shops sorted by fulfillmentRate, filters by category |
@@ -121,13 +124,18 @@ functions/
 | G7 | ✅ | Orders pending >2h auto-cancel via scheduled Cloud Function |
 | G8 | ✅ | Auto-cancelled order triggers FCM + similar items screen with category filter |
 | G9 | ✅ | All UI strings in Arabic + English; locale detected from device |
+| G10 | ✅ | Black & white design theme with dark background, white text, clean minimal style |
+| G11 | ✅ | Press animations (scale) on all cards and buttons; slide transitions between screens; fade-in on screen load |
+| G12 | ✅ | Smooth skeleton loading instead of plain spinners |
+| G13 | ✅ | 4 virtual demo clothing stores with 6-8 products each (prices in JOD, sizes, photos) — clearly marked as DEMO |
+| G14 | ✅ | Fulfillment rate % shown on every shop card; COD badge on checkout; cancelled orders show similar items prompt; shop search & filter by category on home screen |
 
 ## [ORPHANS_AND_PENDING]
 
 - [PENDING] Firebase project setup — needs `google-services.json` (Android) and `GoogleService-Info.plist` (iOS)
 - [PENDING] Cloud Functions deployment — needs `firebase init`, `firebase deploy`
 - [PENDING] iOS FCM/APNS certificate setup for push notifications
-- [PENDING] `flutter analyze` shows 61 info-level hints (style/withOpacity-deprecation) — non-blocking
+- [PENDING] `flutter analyze` shows 55 info-level hints (style/withOpacity-deprecation) — non-blocking
 - [PENDING] Language switcher UI in settings (manual `_setLocale` exists but not wired to UI)
 - [PENDING] Product image upload compression strategy (currently uses raw image_picker output)
 - [PENDING] Offline/error UX polish (Firestore offline persistence is default but no explicit retry UI beyond "Try again")
@@ -135,5 +143,7 @@ functions/
 - [PENDING] FCM token stored in Firestore user document (currently retrieved but not persisted)
 - [PENDING] Arabic number formatting (Eastern Arabic numerals vs Western)
 - [PENDING] Test coverage (widget test placeholder only)
+- [PENDING] Demo store images use picsum.photos placeholders — should be replaced with actual product photos for production
 - [DONE] Role selection removed from registration; users register as customers by default. Shop owners with admin accounts (role=shop_owner in Firestore) are redirected to dashboard on login. Login screen shows an informational hint for shop owners.
 - [DONE] Google Sign-In and Anonymous Sign-In added. `_ensureUserDoc()` helper in `auth_service.dart` creates Firestore user doc on first sign-in (role=customer). Login screen has "Sign in with Google" button and "Continue as Guest" button after the OR divider.
+- [DONE] Full B&W theme redesign with dark mode, press animations, slide transitions, fade-in effects, skeleton loading, demo stores, fulfillment rate displays, COD badge, and search/filter by category

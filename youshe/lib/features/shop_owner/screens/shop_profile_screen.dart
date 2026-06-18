@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../../core/theme.dart';
 import '../../../core/constants.dart';
 import '../../../core/services/firestore_service.dart';
 import '../../../core/services/storage_service.dart';
@@ -161,9 +160,9 @@ class _ShopProfileScreenState extends State<ShopProfileScreen> {
               child: Center(
                 child: CircleAvatar(
                   radius: 50,
-                  backgroundColor: AppTheme.primary.withOpacity(0.1),
+                  backgroundColor: Colors.white12,
                   backgroundImage: _logoUrl.isNotEmpty ? NetworkImage(_logoUrl) : null,
-                  child: _logoUrl.isEmpty ? const Icon(Icons.store, size: 40, color: AppTheme.primary) : null,
+                  child: _logoUrl.isEmpty ? const Icon(Icons.store, size: 40, color: Colors.white54) : null,
                 ),
               ),
             ),

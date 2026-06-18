@@ -106,6 +106,13 @@ class AppLocalizations {
       'apply': 'Apply',
       'maxPrice': 'Max price',
       'minPrice': 'Min price',
+      'cashOnDelivery': 'Cash on Delivery',
+      'demoStore': 'Demo Store',
+      'filterByCategory': 'Filter by category',
+      'search': 'Search',
+      'noResults': 'No results found',
+      'browseShops': 'Browse Shops',
+      'popularShops': 'Popular Shops',
     },
     'ar': {
       'appName': 'يوش',
@@ -213,6 +220,13 @@ class AppLocalizations {
       'apply': 'تطبيق',
       'maxPrice': 'أقصى سعر',
       'minPrice': 'أدنى سعر',
+      'cashOnDelivery': 'الدفع عند الاستلام',
+      'demoStore': 'متجر تجريبي',
+      'filterByCategory': 'تصفية حسب الفئة',
+      'search': 'بحث',
+      'noResults': 'لا توجد نتائج',
+      'browseShops': 'تصفح المتاجر',
+      'popularShops': 'المتاجر الشائعة',
     },
   };
 

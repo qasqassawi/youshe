@@ -20,7 +20,9 @@ class _YousheAppState extends State<YousheApp> {
     return MaterialApp.router(
       title: 'Youshe',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.light,
+      theme: AppTheme.dark,
+      darkTheme: AppTheme.dark,
+      themeMode: ThemeMode.dark,
       locale: _locale,
       supportedLocales: const [Locale('en'), Locale('ar')],
       localizationsDelegates: const [

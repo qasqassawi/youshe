@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import '../../../core/theme.dart';
 import '../../../core/constants.dart';
 import '../../../l10n/app_localizations.dart';
 import '../providers/auth_provider.dart';
@@ -58,15 +57,15 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.checkroom, size: 80, color: AppTheme.primary),
+                const Icon(Icons.checkroom, size: 80, color: Colors.white),
                 const SizedBox(height: 16),
                 Text(t('appName'), style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      color: AppTheme.primary,
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                     )),
                 const SizedBox(height: 8),
                 Text(t('tagline'), style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: AppTheme.textSecondary,
+                      color: Color(0xFF888888),
                     )),
                 const SizedBox(height: 48),
                 TextFormField(
@@ -103,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 if (authProvider.error != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 8),
-                    child: Text(authProvider.error!, style: const TextStyle(color: AppTheme.error)),
+                    child: Text(authProvider.error!, style: const TextStyle(color: Color(0xFFCF6679))),
                   ),
                 const SizedBox(height: 24),
                 SizedBox(
@@ -168,11 +167,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.store_outlined, size: 14, color: AppTheme.accent),
+                    Icon(Icons.store_outlined, size: 14, color: Colors.white54),
                     const SizedBox(width: 6),
                     Text(
                       t('shopOwnerLogin'),
-                      style: TextStyle(color: AppTheme.accent, fontSize: 12),
+                      style: TextStyle(color: Colors.white54, fontSize: 12),
                     ),
                   ],
                 ),

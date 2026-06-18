@@ -14,6 +14,7 @@ class ShopModel {
   final int totalOrders;
   final int successfulOrders;
   final bool isActive;
+  final bool isDemo;
   final DateTime? createdAt;
 
   ShopModel({
@@ -32,6 +33,7 @@ class ShopModel {
     this.totalOrders = 0,
     this.successfulOrders = 0,
     this.isActive = true,
+    this.isDemo = false,
     this.createdAt,
   });
 
@@ -52,6 +54,7 @@ class ShopModel {
       totalOrders: (data['totalOrders'] as num?)?.toInt() ?? 0,
       successfulOrders: (data['successfulOrders'] as num?)?.toInt() ?? 0,
       isActive: data['isActive'] as bool? ?? true,
+      isDemo: data['isDemo'] as bool? ?? false,
       createdAt: (data['createdAt'] as dynamic)?.toDate(),
     );
   }
@@ -71,6 +74,7 @@ class ShopModel {
         'totalOrders': totalOrders,
         'successfulOrders': successfulOrders,
         'isActive': isActive,
+        'isDemo': isDemo,
       };
 
   String displayName(String locale) => locale == 'ar' ? nameAr : nameEn;

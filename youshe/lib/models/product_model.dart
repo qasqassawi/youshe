@@ -11,6 +11,7 @@ class ProductModel {
   final String category;
   final List<String> images;
   final bool isAvailable;
+  final bool isDemo;
   final DateTime? createdAt;
 
   ProductModel({
@@ -26,6 +27,7 @@ class ProductModel {
     this.category = '',
     this.images = const [],
     this.isAvailable = true,
+    this.isDemo = false,
     this.createdAt,
   });
 
@@ -43,6 +45,7 @@ class ProductModel {
       category: data['category'] as String? ?? '',
       images: List<String>.from(data['images'] as List? ?? []),
       isAvailable: data['isAvailable'] as bool? ?? true,
+      isDemo: data['isDemo'] as bool? ?? false,
       createdAt: (data['createdAt'] as dynamic)?.toDate(),
     );
   }
@@ -59,6 +62,7 @@ class ProductModel {
         'category': category,
         'images': images,
         'isAvailable': isAvailable,
+        'isDemo': isDemo,
       };
 
   String displayName(String locale) => locale == 'ar' ? nameAr : nameEn;

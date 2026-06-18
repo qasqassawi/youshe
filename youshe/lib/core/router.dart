@@ -20,6 +20,22 @@ import '../features/shop_owner/screens/shop_profile_screen.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 
+Page<void> _slideLeft(Widget child, GoRouterState state) {
+  return CustomTransitionPage(
+    key: state.pageKey,
+    child: child,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      return SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(1, 0),
+          end: Offset.zero,
+        ).animate(animation),
+        child: child,
+      );
+    },
+  );
+}
+
 GoRouter createRouter(AuthProvider authProvider) {
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
@@ -45,49 +61,58 @@ GoRouter createRouter(AuthProvider authProvider) {
     routes: [
       GoRoute(
         path: '/login',
-        builder: (context, state) => const LoginScreen(),
+        pageBuilder: (context, state) => _slideLeft(const LoginScreen(), state),
       ),
       GoRoute(
         path: '/register',
-        builder: (context, state) => const RegisterScreen(),
+        pageBuilder: (context, state) => _slideLeft(const RegisterScreen(), state),
       ),
       ShellRoute(
         builder: (context, state, child) => CustomerShell(child: child),
         routes: [
           GoRoute(
             path: '/customer/home',
-            builder: (context, state) => const CustomerHomeScreen(),
+            pageBuilder: (context, state) => _slideLeft(const CustomerHomeScreen(), state),
           ),
           GoRoute(
             path: '/customer/shops',
-            builder: (context, state) => const ShopListScreen(),
+            pageBuilder: (context, state) => _slideLeft(const ShopListScreen(), state),
           ),
           GoRoute(
             path: '/customer/shops/:shopId',
-            builder: (context, state) => ShopDetailScreen(shopId: state.pathParameters['shopId']!),
+            pageBuilder: (context, state) => _slideLeft(
+              ShopDetailScreen(shopId: state.pathParameters['shopId']!),
+              state,
+            ),
           ),
           GoRoute(
             path: '/customer/products/:productId',
-            builder: (context, state) => ProductDetailScreen(productId: state.pathParameters['productId']!),
+            pageBuilder: (context, state) => _slideLeft(
+              ProductDetailScreen(productId: state.pathParameters['productId']!),
+              state,
+            ),
           ),
           GoRoute(
             path: '/customer/cart',
-            builder: (context, state) => const CartScreen(),
+            pageBuilder: (context, state) => _slideLeft(const CartScreen(), state),
           ),
           GoRoute(
             path: '/customer/checkout',
-            builder: (context, state) => const CheckoutScreen(),
+            pageBuilder: (context, state) => _slideLeft(const CheckoutScreen(), state),
           ),
           GoRoute(
             path: '/customer/orders',
-            builder: (context, state) => const OrderTrackingScreen(),
+            pageBuilder: (context, state) => _slideLeft(const OrderTrackingScreen(), state),
           ),
           GoRoute(
             path: '/customer/similar-items',
-            builder: (context, state) {
+            pageBuilder: (context, state) {
               final category = state.uri.queryParameters['category'] ?? '';
               final excludeShopId = state.uri.queryParameters['excludeShopId'] ?? '';
-              return SimilarItemsScreen(category: category, excludeShopId: excludeShopId);
+              return _slideLeft(
+                SimilarItemsScreen(category: category, excludeShopId: excludeShopId),
+                state,
+              );
             },
           ),
         ],
@@ -97,34 +122,40 @@ GoRouter createRouter(AuthProvider authProvider) {
         routes: [
           GoRoute(
             path: '/owner/dashboard',
-            builder: (context, state) => const OwnerDashboardScreen(),
+            pageBuilder: (context, state) => _slideLeft(const OwnerDashboardScreen(), state),
           ),
           GoRoute(
             path: '/owner/products',
-            builder: (context, state) => const ProductFormScreen(),
+            pageBuilder: (context, state) => _slideLeft(const ProductFormScreen(), state),
           ),
           GoRoute(
             path: '/owner/products/add',
-            builder: (context, state) => const ProductFormScreen(isEditing: false),
+            pageBuilder: (context, state) => _slideLeft(const ProductFormScreen(isEditing: false), state),
           ),
           GoRoute(
             path: '/owner/products/:productId/edit',
-            builder: (context, state) => ProductFormScreen(
-              isEditing: true,
-              productId: state.pathParameters['productId'],
+            pageBuilder: (context, state) => _slideLeft(
+              ProductFormScreen(
+                isEditing: true,
+                productId: state.pathParameters['productId'],
+              ),
+              state,
             ),
           ),
           GoRoute(
             path: '/owner/orders',
-            builder: (context, state) => const OrderManagementScreen(),
+            pageBuilder: (context, state) => _slideLeft(const OrderManagementScreen(), state),
           ),
           GoRoute(
             path: '/owner/orders/:orderId',
-            builder: (context, state) => OrderDetailScreen(orderId: state.pathParameters['orderId']!),
+            pageBuilder: (context, state) => _slideLeft(
+              OrderDetailScreen(orderId: state.pathParameters['orderId']!),
+              state,
+            ),
           ),
           GoRoute(
             path: '/owner/shop',
-            builder: (context, state) => const ShopProfileScreen(),
+            pageBuilder: (context, state) => _slideLeft(const ShopProfileScreen(), state),
           ),
         ],
       ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../core/theme.dart';
+import 'package:go_router/go_router.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../models/order_model.dart';
 import '../providers/order_provider.dart';
@@ -38,9 +38,11 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.receipt_long_outlined, size: 80, color: AppTheme.textSecondary.withOpacity(0.5)),
+                      Icon(Icons.receipt_long_outlined,
+                          size: 80, color: Colors.white.withOpacity(0.2)),
                       const SizedBox(height: 16),
-                      Text(t('noOrders'), style: const TextStyle(fontSize: 16, color: AppTheme.textSecondary)),
+                      Text(t('noOrders'),
+                          style: const TextStyle(fontSize: 16, color: Colors.white38)),
                     ],
                   ),
                 )
@@ -51,7 +53,22 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                     itemCount: orderProvider.orders.length,
                     itemBuilder: (context, index) {
                       final order = orderProvider.orders[index];
-                      return _OrderCard(order: order, locale: locale, t: t);
+                      return _OrderCard(
+                        order: order,
+                        locale: locale,
+                        t: t,
+                        onViewSimilar: order.isCancelled && !order.autoCancelled
+                            ? () {
+                                if (order.items.isNotEmpty) {
+                                  final category =
+                                      order.items.first.displayName(locale);
+                                  context.go(
+                                    '/customer/similar-items?category=$category&excludeShopId=${order.shopId}',
+                                  );
+                                }
+                              }
+                            : null,
+                      );
                     },
                   ),
                 ),
@@ -63,8 +80,14 @@ class _OrderCard extends StatelessWidget {
   final OrderModel order;
   final String locale;
   final String Function(String) t;
+  final VoidCallback? onViewSimilar;
 
-  const _OrderCard({required this.order, required this.locale, required this.t});
+  const _OrderCard({
+    required this.order,
+    required this.locale,
+    required this.t,
+    this.onViewSimilar,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -77,40 +100,61 @@ class _OrderCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('${t('orderNumber')}${order.id.substring(0, 8)}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                Text('${t('orderNumber')}${order.id.substring(0, 8)}',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.white)),
                 OrderStatusBadge(status: order.status, locale: locale),
               ],
             ),
             const SizedBox(height: 8),
-            ...order.items.take(3).map((item) => Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
-                  child: Text(
-                    '${item.displayName(locale)} x${item.quantity}',
-                    style: const TextStyle(color: AppTheme.textSecondary),
+            ...order.items.take(3).map(
+                  (item) => Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Text(
+                      '${item.displayName(locale)} x${item.quantity}',
+                      style: const TextStyle(color: Color(0xFF888888)),
+                    ),
                   ),
-                )),
+                ),
             if (order.items.length > 3)
-              Text('+${order.items.length - 3} ${t('items').toLowerCase()}', style: const TextStyle(color: AppTheme.textSecondary)),
+              Text('+${order.items.length - 3} ${t('items').toLowerCase()}',
+                  style: const TextStyle(color: Color(0xFF888888))),
             const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   '${order.totalAmount.toStringAsFixed(2)} JOD',
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.accent),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.white),
                 ),
                 if (order.createdAt != null)
                   Text(
                     '${order.createdAt!.day}/${order.createdAt!.month}/${order.createdAt!.year}',
-                    style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                    style: const TextStyle(fontSize: 12, color: Color(0xFF888888)),
                   ),
               ],
             ),
             if (order.autoCancelled)
               Padding(
                 padding: const EdgeInsets.only(top: 8),
-                child: Text(t('autoCancelled'), style: const TextStyle(color: AppTheme.error, fontSize: 12)),
+                child: Text(t('autoCancelled'),
+                    style:
+                        const TextStyle(color: Color(0xFFCF6679), fontSize: 12)),
               ),
+            if (onViewSimilar != null) ...[
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: onViewSimilar,
+                  icon: const Icon(Icons.auto_awesome, size: 16),
+                  label: Text(t('similarItems')),
+                ),
+              ),
+            ],
           ],
         ),
       ),

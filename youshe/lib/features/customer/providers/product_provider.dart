@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import '../../../core/constants.dart';
+import '../../../core/demo_data.dart';
 import '../../../core/services/firestore_service.dart';
 import '../../../models/product_model.dart';
 
@@ -18,6 +19,14 @@ class ProductProvider extends ChangeNotifier {
   void loadProductsByShop(String shopId) {
     _isLoading = true;
     notifyListeners();
+
+    if (shopId.startsWith(DemoData.shopIdPrefix)) {
+      _products = DemoData.products.where((p) => p.shopId == shopId).toList();
+      _isLoading = false;
+      _error = null;
+      notifyListeners();
+      return;
+    }
 
     _subscription?.cancel();
     _subscription = _firestore
@@ -63,21 +72,32 @@ class ProductProvider extends ChangeNotifier {
   }
 
   Future<ProductModel?> getProductById(String productId) async {
+    if (productId.startsWith(DemoData.shopIdPrefix)) {
+      try {
+        return DemoData.products.firstWhere((p) => p.id == productId);
+      } catch (_) {
+        return null;
+      }
+    }
     final data = await _firestore.get(FirestoreCollections.products, productId);
     if (data == null) return null;
     return ProductModel.fromMap(productId, data);
   }
 
   Future<List<ProductModel>> getSimilarProducts(String category, String excludeShopId) async {
-    final snapshot = await _firestore
+    final firestoreSnapshot = await _firestore
         .collection(FirestoreCollections.products)
         .where('category', isEqualTo: category)
         .where('isAvailable', isEqualTo: true)
         .get();
-    return snapshot.docs
+    final firestoreProducts = firestoreSnapshot.docs
         .map((doc) => ProductModel.fromMap(doc.id, doc.data() as Map<String, dynamic>))
         .where((p) => p.shopId != excludeShopId)
         .toList();
+    final demoProducts = DemoData.products
+        .where((p) => p.category == category && p.shopId != excludeShopId)
+        .toList();
+    return [...demoProducts, ...firestoreProducts];
   }
 
   List<ProductModel> filterProducts({String? category, double? minPrice, double? maxPrice, String? size}) {
