@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "665201141047",
+    "project_id": "youshe-c639e",
+    "storage_bucket": "youshe-c639e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:665201141047:android:575b6233a63897790766b2",
+        "android_client_info": {
+          "package_name": "com.youshe.youshe"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZBwE9JbqAQ32wvpKn0cXKoJX_4nLl-zc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
